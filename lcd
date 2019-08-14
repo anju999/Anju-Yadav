@@ -1,0 +1,53 @@
+#include<avr/io.h>
+#include<util/delay.h>
+void lcd_init()
+{
+  lcd_cmd(0X02);
+  lcd_cmd(0X28);
+  lcd_cmd(0X0C);
+  lcd_cmd(0X06);
+  lcd_cmd(0X01);
+}
+ void lcd_cmd(int cmd)
+{
+  PORTB=cmd&0XF0;
+  PORTB=PORTB+0X04;
+  _delay_ms(2);
+  PORTB = PORTB-0X04;
+  PORTB = (cmd<<4)&0XF0;
+  PORTB = PORTB + 0X04;
+  _delay_ms(2);
+  PORTB = PORTB-0X04;
+ }
+  void lcd_data(int data)
+  {
+  PORTB = data&0XF0;
+  PORTB = PORTB+0X05;
+  _delay_ms(2);
+  PORTB = PORTB-0X04;
+  PORTB = (data<<4)&0XF0;
+  PORTB = PORTB+0X05;
+  _delay_ms(2);
+  PORTB = PORTB-0X04;
+  }
+  void lcd_string(char*str)
+  {
+  int i = 0;
+  while(str[i]!='\0')
+  {
+   lcd_data(str[i]);
+   _delay_ms(1);
+   i++;
+   }
+   }
+  int main()
+  {
+   DDRB = 0XFF;
+   lcd_init();
+   _delay_ms(10);
+   while(1)
+   {
+    lcd_cmd(0X80);
+	lcd_string("ANJU YADAV");
+	}
+}
